@@ -5,7 +5,7 @@ export default function AppLayout() {
   const { user, signOut } = useAuth()
   return <div className="app-shell">
     <aside className="sidebar"><div className="brand">TĐ5 <span>· QUẢN LÝ KHO</span></div>
-      <nav aria-label="Điều hướng chính"><NavLink to="/" end>Trang chủ</NavLink><NavLink to="/account/security">Tài khoản cá nhân</NavLink>
+      <nav aria-label="Điều hướng chính"><NavLink to="/" end>Trang chủ</NavLink><NavLink to="/account/security">Tài khoản cá nhân</NavLink><span className="nav-hint">Quản lý kho · Danh mục</span><NavLink to="/catalog/materials">Vật chất</NavLink><NavLink to="/catalog/categories">Loại vật chất</NavLink><NavLink to="/catalog/units">Đơn vị tính</NavLink>
         {user.role.code === 'BATTALION_ADMIN' && <><span className="nav-hint">Quản trị Tiểu đoàn</span><NavLink to="/admin/accounts">Tài khoản</NavLink></>}
         {user.role.code === 'COMPANY_ADMIN' && <span className="nav-hint">Đơn vị của tôi</span>}
       </nav>
