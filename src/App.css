@@ -36,6 +36,10 @@
 .account-form label { display: grid; gap: .35rem; min-width: 0; }
 .account-form input, .account-form select { width: 100%; min-width: 0; padding: .65rem; }
 .account-form button { justify-self: start; }
+.catalog-page textarea { width: 100%; min-height: 6rem; padding: .65rem; resize: vertical; }
+.catalog-page .catalog-pages { align-items: center; margin-top: 1rem; }
+.catalog-page { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 767px) { .catalog-page .table-scroll { max-width: calc(100vw - 5rem); } }
 .auth-divider { text-align: center; border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1.5rem; }
 .remember-option { display: flex !important; align-items: center; gap: .5rem; width: fit-content; }
 .remember-option input { width: auto; }
