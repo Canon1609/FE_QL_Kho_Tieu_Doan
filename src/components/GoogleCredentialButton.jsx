@@ -1,3 +1,4 @@
+import Alert from './Alert'
 import { useEffect, useRef, useState } from 'react'
 import { renderGoogleButton } from '../services/googleIdentity.service'
 
@@ -20,6 +21,6 @@ export default function GoogleCredentialButton({ onCredential }) {
   return <>
     {status === 'loading' && <p role="status">Đang tải Google Sign-In…</p>}
     <div ref={element} aria-label="Đăng nhập bằng Google" />
-    {status === 'error' && <p role="alert" className="error-text">Không tải hoặc khởi tạo được Google Sign-In. Vui lòng kiểm tra kết nối và thử tải lại trang.</p>}
+    {status === 'error' && <Alert>Không tải hoặc khởi tạo được Google Sign-In. Vui lòng kiểm tra kết nối và thử tải lại trang.</Alert>}
   </>
 }

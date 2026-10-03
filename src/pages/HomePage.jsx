@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Alert from '../components/Alert'
 import { getHealth } from '../services/health.service'
 
 export default function HomePage() {
@@ -17,7 +18,7 @@ export default function HomePage() {
       <h2 id="health-title">Trạng thái kết nối</h2>
       {health.status === 'checking' && <p role="status">Đang kiểm tra Backend và cơ sở dữ liệu…</p>}
       {health.status === 'connected' && <div className="health-status" role="status"><p>Backend/API: {health.data.api}</p><p>Database: {health.data.database}</p><p>{health.message}</p></div>}
-      {health.status === 'unavailable' && <p role="status">Backend hoặc cơ sở dữ liệu hiện không khả dụng.</p>}
+      {health.status === 'unavailable' && <Alert>Backend hoặc cơ sở dữ liệu hiện không khả dụng.</Alert>}
     </section>
   )
 }

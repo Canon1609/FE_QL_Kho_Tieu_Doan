@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import Alert from '../components/Alert'
 import { createCompany, deleteCompany, getUser, listCompanies, listUsers, setUserActive, updateCompany, resetCompanyPassword } from '../services/users.service'
 
 const blank = { username: '', full_name: '', password: '', confirm: '', unit_id: '' }
@@ -105,8 +106,8 @@ export default function AccountsPage() {
   }
   return <section className="accounts-page">
     <h2>Quản trị · Tài khoản</h2><p>Quản lý tài khoản cán bộ Đại đội trong phạm vi Tiểu đoàn 5.</p>
-    {feedback && <p role="status" className="success-text">{feedback}</p>}
-    {error && <div role="alert" className="error-text">{error} <button type="button" onClick={reload}>Tải lại</button></div>}
+    {feedback && <Alert variant="success">{feedback}</Alert>}
+    {error && <Alert action={<button type="button" onClick={reload}>Tải lại</button>}>{error}</Alert>}
     <section className="account-card"><h3>Danh sách tài khoản</h3>
       <button type="button" onClick={reload} disabled={loading}>Làm mới</button>
       <div className="account-filters">

@@ -1,3 +1,4 @@
+import Alert from '../components/Alert'
 import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
@@ -79,8 +80,8 @@ function CatalogContent({ kind }) {
   }
   if (!titles[kind]) return <p>Danh mục không tồn tại.</p>
   return <section className="accounts-page catalog-page"><h2>Danh mục · {titles[kind]}</h2><p>{kind === 'materials' ? 'Danh mục nhận diện vật chất; không sửa tồn kho trực tiếp trong Material CRUD.' : 'Dữ liệu dùng chung cho danh mục vật chất.'}</p>
-    {feedback && <p className="success-text" role="status">{feedback}</p>}
-    {error && <div role="alert" className="error-text">{error} <button type="button" onClick={refresh}>Tải lại</button></div>}
+    {feedback && <Alert variant="success">{feedback}</Alert>}
+    {error && <Alert action={<button type="button" onClick={refresh}>Tải lại</button>}>{error}</Alert>}
     <section className="account-card"><h3>Danh sách {titles[kind].toLowerCase()}</h3><div className="account-filters">
       <label>Tìm mã / tên<input value={search} onChange={e => { setPage(1); setSearch(e.target.value) }} /></label>
       {kind === 'materials' && <label>Loại vật chất<select value={categoryFilter} onChange={e => { setPage(1); setCategoryFilter(e.target.value) }}><option value="">Tất cả</option>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>}
