@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import GoogleCredentialButton from '../components/GoogleCredentialButton'
+import Alert from '../components/Alert'
 import { changePassword, linkGoogle } from '../services/auth.service'
 import { useAuth } from '../context/useAuth'
 
@@ -29,7 +30,7 @@ export default function AccountSecurityPage() {
     finally { setBusy(false) }
   }
   return <section><h2>Tài khoản cá nhân</h2>
-    {error && <p role="alert" className="error-text">{error}</p>}{success && <p role="status" className="success-text">{success}</p>}
+    {error && <Alert>{error}</Alert>}{success && <Alert variant="success">{success}</Alert>}
     <h3>Đổi mật khẩu</h3><form className="account-form" onSubmit={submit}>
       <label>Mật khẩu hiện tại<input type="password" autoComplete="current-password" required value={form.current} onChange={e => setForm({ ...form, current: e.target.value })} /></label>
       <label>Mật khẩu mới (12–72 ký tự)<input type="password" autoComplete="new-password" required minLength={12} maxLength={72} value={form.next} onChange={e => setForm({ ...form, next: e.target.value })} /></label>

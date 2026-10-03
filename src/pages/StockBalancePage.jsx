@@ -1,0 +1,19 @@
+import Alert from '../components/Alert'
+import { useCallback, useEffect, useState } from 'react'
+import { listCatalog } from '../services/catalog.service'
+import { balances, ledger } from '../services/stock.service'
+const message = err => err.response?.data?.message || 'Không thể kết nối máy chủ. Vui lòng thử lại.'
+export default function StockBalancePage() {
+  const [items, setItems] = useState([]), [categories, setCategories] = useState([]), [search, setSearch] = useState(''), [category, setCategory] = useState('')
+  const [history, setHistory] = useState(null), [loading, setLoading] = useState(true), [error, setError] = useState('')
+  const refresh = useCallback(async () => { setLoading(true); setError(''); try { setItems(await balances({ ...(search && { search }), ...(category && { category_id: category }) })) } catch (err) { setItems([]); setError(message(err)) } finally { setLoading(false) } }, [search, category])
+  useEffect(() => { const t = setTimeout(refresh, 250); return () => clearTimeout(t) }, [refresh])
+  useEffect(() => { let active = true; listCatalog('categories', { limit: 100 }).then(r => { if (active) setCategories(r.items) }).catch(() => { if (active) setError('Không tải được danh mục loại.') }); return () => { active = false } }, [])
+  async function view(item, page = 1) { setError(''); try { setHistory({ material: item, data: await ledger({ material_id: item.id, page }) }) } catch (err) { setError(message(err)) } }
+  return <section className="accounts-page stock-page"><h2>Tồn kho Tiểu đoàn</h2><p>Số lượng tính từ stock ledger theo vị trí kho Tiểu đoàn; không cộng phân bổ Đại đội.</p>
+    {error && <Alert action={<button type="button" onClick={refresh}>Tải lại</button>}>{error}</Alert>}
+    <section className="account-card"><div className="account-filters"><label>Tìm mã / vật chất<input value={search} onChange={e => setSearch(e.target.value)} /></label><label>Loại<select value={category} onChange={e => setCategory(e.target.value)}><option value="">Tất cả</option>{categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label></div>
+    {loading ? <p role="status">Đang tải…</p> : !items.length ? <p>Chưa có vật chất có ghi sổ phù hợp.</p> : <div className="table-scroll" tabIndex="0"><table><thead><tr><th>Mã</th><th>Vật chất</th><th>Loại</th><th>ĐVT</th><th>Tồn kho Tiểu đoàn</th><th>Thao tác</th></tr></thead><tbody>{items.map(item => <tr key={item.id}><td>{item.code}</td><td>{item.name}</td><td>{item.category?.name}</td><td>{item.unit?.name}</td><td>{item.quantity}</td><td><button onClick={() => view(item)}>Lịch sử</button></td></tr>)}</tbody></table></div>}
+    </section>{history && <section className="account-card"><h3>{history.material.code} · Phân theo nguồn / tình trạng</h3><ul>{history.material.breakdown.map((b, i) => <li key={i}>{b.source} · {b.condition || 'Chưa phân loại'}: {b.quantity}</li>)}</ul><h3>Lịch sử ghi sổ (trang {history.data.page})</h3>{history.data.items.length ? <div className="table-scroll"><table><thead><tr><th>Ngày</th><th>Loại</th><th>Nguồn</th><th>Tình trạng</th><th>Thay đổi</th><th>Phiếu</th></tr></thead><tbody>{history.data.items.map(e => <tr key={e.id}><td>{new Date(e.occurred_at).toLocaleString('vi-VN')}</td><td>{e.transaction_type === 'OPENING_BALANCE' ? 'Tồn đầu kỳ' : 'Nhập kho'}</td><td>{e.source?.name}</td><td>{e.condition?.name || '—'}</td><td>+{e.quantity_delta}</td><td>#{e.reference_id}</td></tr>)}</tbody></table></div> : <p>Không có lịch sử.</p>}<div className="row-actions"><button disabled={history.data.page <= 1} onClick={() => view(history.material, history.data.page - 1)}>Trước</button><button disabled={history.data.page * 20 >= history.data.total} onClick={() => view(history.material, history.data.page + 1)}>Sau</button><button onClick={() => setHistory(null)}>Đóng</button></div></section>}
+  </section>
+}

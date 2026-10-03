@@ -5,9 +5,30 @@ export default function AppLayout() {
   const { user, signOut } = useAuth()
   return <div className="app-shell">
     <aside className="sidebar"><div className="brand">TĐ5 <span>· QUẢN LÝ KHO</span></div>
-      <nav aria-label="Điều hướng chính"><NavLink to="/" end>Trang chủ</NavLink><NavLink to="/account/security">Tài khoản cá nhân</NavLink><span className="nav-hint">Quản lý kho · Danh mục</span><NavLink to="/catalog/materials">Vật chất</NavLink><NavLink to="/catalog/categories">Loại vật chất</NavLink><NavLink to="/catalog/units">Đơn vị tính</NavLink>
-        {user.role.code === 'BATTALION_ADMIN' && <><span className="nav-hint">Quản trị Tiểu đoàn</span><NavLink to="/admin/accounts">Tài khoản</NavLink></>}
-        {user.role.code === 'COMPANY_ADMIN' && <span className="nav-hint">Đơn vị của tôi</span>}
+      <nav aria-label="Điều hướng chính">
+        <NavLink className="nav-primary" to="/" end>Trang chủ</NavLink>
+        <NavLink className="nav-primary" to="/account/security">Tài khoản cá nhân</NavLink>
+        <div className="nav-group" role="group" aria-labelledby="nav-catalog">
+          <span className="nav-heading" id="nav-catalog">Quản lý kho · Danh mục</span>
+          <div className="nav-submenu">
+            <NavLink to="/catalog/materials">Vật chất</NavLink>
+            <NavLink to="/catalog/categories">Loại vật chất</NavLink>
+            <NavLink to="/catalog/units">Đơn vị tính</NavLink>
+          </div>
+        </div>
+        {user.role.code === 'BATTALION_ADMIN' && <>
+          <div className="nav-group" role="group" aria-labelledby="nav-stock">
+            <span className="nav-heading" id="nav-stock">Quản lý kho · Giao dịch</span>
+            <div className="nav-submenu">
+              <NavLink to="/stock/receipts">Nhập kho</NavLink>
+              <NavLink to="/stock/balance">Tồn kho</NavLink>
+            </div>
+          </div>
+          <div className="nav-group" role="group" aria-labelledby="nav-admin">
+            <span className="nav-heading" id="nav-admin">Quản trị Tiểu đoàn</span>
+            <div className="nav-submenu"><NavLink to="/admin/accounts">Tài khoản</NavLink></div>
+          </div>
+        </>}
       </nav>
     </aside>
     <div className="shell-main"><header className="shell-header">

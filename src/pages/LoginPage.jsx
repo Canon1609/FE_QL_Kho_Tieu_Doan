@@ -1,3 +1,4 @@
+import Alert from '../components/Alert'
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import GoogleCredentialButton from '../components/GoogleCredentialButton' 
@@ -37,7 +38,7 @@ export default function LoginPage() {
       <label htmlFor="username">Tên đăng nhập</label><input id="username" autoComplete="username" value={username} maxLength={100} required onChange={(e) => setUsername(e.target.value)} />
       <label htmlFor="password">Mật khẩu</label><input id="password" type="password" autoComplete="current-password" value={password} required onChange={(e) => setPassword(e.target.value)} />
       <label className="remember-option"><input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} /> Ghi nhớ đăng nhập</label>
-      {error && <p role="alert" className="error-text">{error}</p>}
+      {error && <Alert>{error}</Alert>}
       <button disabled={pending} type="submit">{pending ? 'Đang đăng nhập…' : 'Đăng nhập'}</button>
     </form>
     <p className="auth-divider">Hoặc</p><GoogleCredentialButton onCredential={google} />

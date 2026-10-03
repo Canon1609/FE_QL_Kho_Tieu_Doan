@@ -1,3 +1,4 @@
+import Alert from '../components/Alert'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import GoogleCredentialButton from '../components/GoogleCredentialButton'
@@ -24,6 +25,6 @@ export default function ForgotPasswordPage() {
     {credential && <form onSubmit={submit}><label>Mật khẩu mới (12–72 ký tự)<input type="password" required minLength={12} maxLength={72} value={password} onChange={e => setPassword(e.target.value)} /></label>
       <label>Xác nhận mật khẩu mới<input type="password" required value={confirm} onChange={e => setConfirm(e.target.value)} /></label>
       <button disabled={busy} type="submit">Đặt lại mật khẩu</button></form>}
-    {error && <p role="alert" className="error-text">{error}</p>}<p><Link to="/login">Về đăng nhập</Link></p>
+    {error && <Alert>{error}</Alert>}<p><Link to="/login">Về đăng nhập</Link></p>
   </section></main>
 }
