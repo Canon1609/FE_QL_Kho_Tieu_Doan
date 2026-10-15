@@ -39,6 +39,10 @@
 .account-card th, .account-card td { padding: .65rem; border-bottom: 1px solid #d5ddd4; text-align: left; }
 .account-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .account-form label { display: grid; gap: .35rem; min-width: 0; }
+.account-form .form-field { display: grid; align-content: start; gap: .35rem; min-width: 0; }
+.account-form .form-field > label { display: grid; gap: .35rem; min-width: 0; }
+.account-form .form-field textarea { width: 100%; min-width: 0; }
+.account-form .form-field:has(.field-error) input, .account-form .form-field:has(.field-error) select, .account-form .form-field:has(.field-error) textarea { border-color: #9a302a; }
 .account-form input, .account-form select { width: 100%; min-width: 0; padding: .65rem; }
 .account-form button { justify-self: start; }
 .catalog-page textarea { width: 100%; min-height: 6rem; padding: .65rem; resize: vertical; }
@@ -48,6 +52,33 @@
 .stock-page { min-width: 0; overflow-wrap: anywhere; }
 .stock-page .table-scroll { max-width: 100%; }
 .stock-page .account-card { min-width: 0; }
+.location-tree > label { display: grid; gap: .4rem; max-width: 32rem; font-weight: 600; }
+.location-tree > label input { width: 100%; min-width: 0; padding: .65rem; }
+.location-tree > button { margin-top: 1rem; }
+.location-row { align-items: center; padding-block: .2rem; min-width: 0; }
+.location-row button:last-child { min-width: 0; text-align: left; overflow-wrap: anywhere; }
+.location-editor .account-form { align-items: start; gap: 1rem 1.25rem; }
+.location-editor .account-form > label { font-weight: 600; line-height: 1.4; }
+.location-editor input, .location-editor select, .location-editor textarea { font: inherit; border: 1px solid #929f93; border-radius: .35rem; background: #fff; }
+.location-editor textarea { width: 100%; min-width: 0; min-height: 5rem; padding: .65rem; resize: vertical; }
+.location-editor .location-note, .location-editor .location-actions { grid-column: 1 / -1; }
+.checkbox-field > label { display: flex; align-items: center; gap: .75rem; width: fit-content; min-height: 2.75rem; padding: .45rem .75rem; border: 1px solid var(--border); border-radius: .4rem; cursor: pointer; }
+.location-editor .checkbox-field input { width: 1.2rem; height: 1.2rem; margin: 0; flex: none; accent-color: #245834; }
+.form-field .field-required { color: #a12d26; }
+.form-field .field-help, .checkbox-field .field-help { display: block; font-weight: 400; color: var(--muted); line-height: 1.4; }
+.form-field .field-error, .checkbox-field .field-error, .field-error { display: block; font-weight: 600; color: #9a302a; }
+.location-editor .form-field:has(.field-error) input, .location-editor .form-field:has(.field-error) select { border-color: #9a302a; }
+.location-row { display: flex; align-items: center; gap: .35rem; margin-block: .25rem; }
+.location-row .location-toggle, .location-row .location-leaf { flex: 0 0 2.4rem; width: 2.4rem; text-align: center; }
+.location-row .location-leaf { color: var(--muted); }
+.location-row .location-node { flex: 1; }
+.location-tree .form-field { max-width: 32rem; }
+.location-editor .form-field > label, .location-tree .form-field > label { display: grid; gap: .35rem; min-width: 0; font-weight: 600; }
+.location-editor .form-field { display: grid; gap: .35rem; min-width: 0; }
+.location-editor .form-field input, .location-editor .form-field select { width: 100%; min-width: 0; padding: .65rem; }
+.location-editor .form-field textarea { width: 100%; }
+.location-editor .form-field.location-note { grid-column: 1 / -1; }
+.location-editor .location-actions { align-items: center; padding-top: .5rem; border-top: 1px solid var(--border); }
 .receipt-item { border: 1px solid var(--border); padding: 1rem; margin: .8rem 0; border-radius: .4rem; min-width: 0; }
 .receipt-form textarea { width: 100%; min-width: 0; min-height: 4rem; padding: .65rem; }
 .stock-badge { background: #e2eddf; color: #1f4930; padding: .3rem .5rem; border-radius: .3rem; white-space: nowrap; }
