@@ -8,7 +8,8 @@ import { companyUnits, listTransfers, getTransfer, saveTransfer, deleteTransfer,
 import { companyAssets } from '../services/transfer.service'
 import { locations, locationBalance } from '../services/location.service'
 import LocationPicker from '../components/LocationPicker'
-const blankItem = () => ({ material_id: '', source_id: '', condition_id: '', quantity: '', note: '' })
+import { borrowedAt } from '../services/borrow.service'
+const blankItem = () => ({ material_id: '', source_id: '', condition_id: '', quantity: '', note: '', borrow_line_id: '' })
 const blank = type => ({ code: '', transfer_type: type, transfer_date: new Date().toISOString().slice(0, 10), company_unit_id: '', from_location_id: '', to_location_id: '', document_no: '', note: '', items: [blankItem()] })
 const msg = err => friendlyError(err)
 async function allMaterials() {
@@ -20,7 +21,7 @@ export default function TransfersPage({ type }) {
   const [rows, setRows] = useState([]), [units, setUnits] = useState([]), [materials, setMaterials] = useState([])
   const [sources, setSources] = useState([]), [conditions, setConditions] = useState([]), [places, setPlaces] = useState([])
   const [form, setForm] = useState(() => blank(type)), [editing, setEditing] = useState(null), [detail, setDetail] = useState(null)
-  const [stock, setStock] = useState([]), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false)
+  const [stock, setStock] = useState([]), [borrowed, setBorrowed] = useState([]), [loading, setLoading] = useState(true), [busy, setBusy] = useState(false)
   const [error, setError] = useState(''), [listError, setListError] = useState(''), [detailError, setDetailError] = useState(''), [success, setSuccess] = useState(''), [fieldErrors, setFieldErrors] = useState({})
   const requestSequence = useRef(0)
   const change = (key, value) => { setForm(f => ({ ...f, [key]: value })); setFieldErrors(e => ({ ...e, [key]: '' })) }
@@ -41,6 +42,7 @@ export default function TransfersPage({ type }) {
     let live = true
     const load = type === 'INTERNAL_TRANSFER' ? locationBalance({ location_id: form.from_location_id, unit_id: form.company_unit_id }) : type === 'ISSUE' ? balances({}) : companyAssets(form.company_unit_id)
     load.then(data => { if (live) setStock(data) }).catch(err => { if (live) setError(msg(err)) })
+    if (type === 'INTERNAL_TRANSFER') borrowedAt({ unit_id: form.company_unit_id, location_id: form.from_location_id }).then(data => { if (live) setBorrowed(data) }).catch(err => { if (live) setError(msg(err)) })
     return () => { live = false }
   }, [form.company_unit_id, form.from_location_id, stockKey, type])
   function reset() { setForm(blank(type)); setEditing(null); setStock([]); setFieldErrors({}) }
@@ -50,14 +52,14 @@ export default function TransfersPage({ type }) {
   async function edit(id) {
     setError(''); try { const row = await getTransfer(id); setEditing(row.id); setForm({ code: row.code, transfer_type: row.transfer_type, transfer_date: row.transfer_date,
       company_unit_id: String(type === 'ISSUE' ? row.to_unit_id : row.from_unit_id), from_location_id: type === 'INTERNAL_TRANSFER' ? String(row.from_location_id) : '', to_location_id: type !== 'RECALL' ? String(row.to_location_id || '') : '', document_no: row.document_no || '', note: row.note || '',
-      items: row.items.map(i => ({ material_id: String(i.material_id), source_id: String(i.source_id), condition_id: i.condition_id ? String(i.condition_id) : '', quantity: i.quantity, note: i.note || '' })) }); document.getElementById('transfer-editor')?.scrollIntoView({ behavior: 'smooth' }) }
+      items: row.items.map(i => ({ material_id: String(i.material_id), source_id: String(i.source_id), condition_id: i.condition_id ? String(i.condition_id) : '', quantity: i.quantity, note: i.note || '', borrow_line_id: i.borrow_line_id ? String(i.borrow_line_id) : '' })) }); document.getElementById('transfer-editor')?.scrollIntoView({ behavior: 'smooth' }) }
     catch (err) { setError(msg(err)) }
   }
   async function submit(e) {
     e.preventDefault(); if (busy) return; setError(''); setSuccess('')
     const next = stockFields(form, { transfer: true, type }); setFieldErrors(next); if (Object.keys(next).length) return
     setBusy(true)
-    try { const { from_location_id, to_location_id, ...fields } = form; await saveTransfer(editing, { ...fields, ...(type === 'INTERNAL_TRANSFER' ? { from_location_id, to_location_id } : type === 'ISSUE' ? { to_location_id } : {}), items: form.items.map(i => ({ ...i, condition_id: i.condition_id || null, quantity: Number(i.quantity) })) }); setSuccess(editing ? 'Đã sửa phiếu nháp.' : 'Đã tạo phiếu nháp.'); reset(); await refresh() }
+    try { const { from_location_id, to_location_id, ...fields } = form; await saveTransfer(editing, { ...fields, ...(type === 'INTERNAL_TRANSFER' ? { from_location_id, to_location_id } : type === 'ISSUE' ? { to_location_id } : {}), items: form.items.map(i => ({ ...i, borrow_line_id: i.borrow_line_id || null, condition_id: i.condition_id || null, quantity: Number(i.quantity) })) }); setSuccess(editing ? 'Đã sửa phiếu nháp.' : 'Đã tạo phiếu nháp.'); reset(); await refresh() }
     catch (err) { setFieldErrors(apiFieldErrors(err)); setError(friendlyError(err)) } finally { setBusy(false) }
   }
   async function action(id, post) {
@@ -88,7 +90,8 @@ export default function TransfersPage({ type }) {
         <Field label="Nguồn" required help="Chọn nguồn của dòng vật chất." error={fieldErrors[`items.${index}.source_id`]}><select required value={item.source_id} onChange={e => changeItem(index, 'source_id', e.target.value)}><option value="">Chọn nguồn</option>{sources.filter(s => s.is_active || s.id === item.source_id).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}</select></Field>
         <Field label="Tình trạng (tùy chọn)" help="Không phân loại nếu không áp dụng."><select value={item.condition_id} onChange={e => changeItem(index, 'condition_id', e.target.value)}><option value="">Không phân loại</option>{conditions.filter(c => c.is_active || c.id === item.condition_id).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select></Field>
         <Field label="Số lượng" required help="Số nguyên dương; ví dụ 5." error={fieldErrors[`items.${index}.quantity`]}><input required type="number" min="1" step="1" value={item.quantity} onChange={e => changeItem(index, 'quantity', e.target.value)} /></Field>
-        <label>Có sẵn tại nơi xuất<output>{form.company_unit_id ? available(item) : 'Chọn Đại đội'}</output></label>
+        {type === 'INTERNAL_TRANSFER' && <Field label="Lượng đang mượn (tùy chọn)" help="Chọn đúng dòng giao mượn để giữ dấu vết khi chuyển phòng."><select value={item.borrow_line_id} onChange={e => changeItem(index, 'borrow_line_id', e.target.value)}><option value="">Tồn không ràng buộc mượn</option>{borrowed.filter(b => String(b.material_id) === String(item.material_id) && String(b.source_id) === String(item.source_id) && String(b.condition_id || '') === String(item.condition_id || '')).map(b => <option key={b.borrow_line_id} value={b.borrow_line_id}>Phiếu {b.request_code} · còn tại vị trí {b.quantity}</option>)}</select></Field>}
+        <label>Tồn vật lý tại nơi xuất (bao gồm lượng mượn)<output>{form.company_unit_id ? available(item) : 'Chọn Đại đội'}</output></label>
         <Field label="Ghi chú dòng (tùy chọn)" help="Tối đa 5000 ký tự."><input maxLength={5000} value={item.note} onChange={e => changeItem(index, 'note', e.target.value)} /></Field></div><button type="button" disabled={busy || form.items.length === 1} onClick={() => setForm(f => ({ ...f, items: f.items.filter((_, n) => n !== index) }))}>Bỏ dòng</button></div>)}
       <div className="row-actions"><button type="button" disabled={busy || form.items.length >= 100} onClick={() => setForm(f => ({ ...f, items: [...f.items, blankItem()] }))}>Thêm dòng</button><button type="submit" disabled={busy || !units.length || !materials.length || !sources.length}>{busy ? 'Đang lưu…' : 'Lưu nháp'}</button>{editing && <button type="button" onClick={reset}>Hủy sửa</button>}</div>
     </form></section>
