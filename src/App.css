@@ -28,9 +28,13 @@
 .accounts-page .account-card h3 { margin-top: 0; }
 .account-card { background: #fff; padding: 1.25rem; margin: 1rem 0; border: 1px solid #d5ddd4; border-radius: 8px; }
 .table-scroll { overflow-x: auto; max-width: 100%; }
+.borrow-overdue { display: inline-block; color: #9b2518; background: #fff0eb; border: 1px solid #c84935; border-radius: .4rem; padding: .15rem .45rem; font-weight: 700; white-space: normal; }
 .account-filters { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .7rem; margin: 1rem 0; }
 .account-filters label { display: grid; gap: .35rem; min-width: 0; }
 .account-filters input, .account-filters select { width: 100%; min-width: 0; padding: .6rem; }
+/* Borrow only: override the filter grid label and full-width input for the checkbox. */
+.borrow-filters .borrow-overdue-filter { display: flex; align-items: center; align-self: end; gap: .5rem; min-height: 2.75rem; white-space: nowrap; cursor: pointer; }
+.borrow-filters .borrow-overdue-filter input[type="checkbox"] { width: 1.2rem; height: 1.2rem; min-width: 1.2rem; flex: none; padding: 0; margin: 0; accent-color: var(--primary); cursor: pointer; }
 .row-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
 .account-detail { display: grid; grid-template-columns: minmax(90px, 150px) minmax(0,1fr); gap: .6rem; overflow-wrap: anywhere; }
 .account-detail dt { font-weight: 700; }

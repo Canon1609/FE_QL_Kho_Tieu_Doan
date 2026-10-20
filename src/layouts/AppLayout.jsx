@@ -24,6 +24,7 @@ export default function AppLayout() {
               <NavLink to="/stock/issue">Cấp phát</NavLink>
               <NavLink to="/stock/recall">Thu hồi</NavLink>
               <NavLink to="/stock/internal-transfer">Điều chuyển nội bộ</NavLink>
+              <NavLink to="/stock/borrow">Mượn / Trả</NavLink>
               <NavLink to="/stock/locations">Địa điểm lưu giữ</NavLink>
               <NavLink to="/stock/balance">Tồn kho</NavLink>
               <NavLink to="/company/assets">Tài sản đơn vị</NavLink>
@@ -36,7 +37,7 @@ export default function AppLayout() {
         </>}
         {user.role.code === 'COMPANY_ADMIN' && <div className="nav-group" role="group" aria-labelledby="nav-company">
           <span className="nav-heading" id="nav-company">Đơn vị của tôi</span>
-          <div className="nav-submenu"><NavLink to="/company/assets">Vật chất của Đại đội</NavLink><NavLink to="/stock/locations">Địa điểm lưu giữ</NavLink></div>
+          <div className="nav-submenu"><NavLink to="/company/assets">Vật chất của Đại đội</NavLink><NavLink to="/stock/borrow">Mượn / Trả</NavLink><NavLink to="/stock/locations">Địa điểm lưu giữ</NavLink></div>
         </div>}
       </nav>
     </aside>

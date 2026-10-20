@@ -23,7 +23,7 @@ export const stockFields = (form, { transfer = false, type = '' } = {}) => {
 export const apiFieldErrors = (err, form) => {
   if (err.response?.data?.errors) return err.response.data.errors
   const message = err.response?.data?.message || ''
-  if (err.response?.status === 409 && /Mã phiếu|Mã danh mục|Username already exists/.test(message)) return { [form === 'account' ? 'username' : 'code']: form === 'account' ? 'Tên đăng nhập đã tồn tại.' : 'Mã đã tồn tại. Vui lòng chọn mã khác.' }
+  if (err.response?.status === 409 && /Mã phiếu|Mã yêu cầu|Mã danh mục|Username already exists/.test(message)) return { [form === 'account' ? 'username' : 'code']: form === 'account' ? 'Tên đăng nhập đã tồn tại.' : 'Mã đã tồn tại. Vui lòng chọn mã khác.' }
   if (/Dòng vật chất\/nguồn\/tình trạng bị trùng/.test(message)) return { items: 'Các dòng không được trùng vật chất, nguồn và tình trạng.' }
   return {}
 }
