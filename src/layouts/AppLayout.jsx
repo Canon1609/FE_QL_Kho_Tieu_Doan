@@ -16,6 +16,7 @@ export default function AppLayout() {
             <NavLink to="/catalog/units">Đơn vị tính</NavLink>
           </div>
         </div>
+        <NavLink className="nav-primary" to="/stock/search">Tra cứu vật chất</NavLink>
         {user.role.code === 'BATTALION_ADMIN' && <>
           <div className="nav-group" role="group" aria-labelledby="nav-stock">
             <span className="nav-heading" id="nav-stock">Quản lý kho · Giao dịch</span>

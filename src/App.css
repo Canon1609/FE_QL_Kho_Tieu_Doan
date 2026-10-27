@@ -32,6 +32,17 @@
 .account-filters { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .7rem; margin: 1rem 0; }
 .account-filters label { display: grid; gap: .35rem; min-width: 0; }
 .account-filters input, .account-filters select { width: 100%; min-width: 0; padding: .6rem; }
+.search-filters .search-check-field { min-width: 0; }
+.search-filters .search-check { display: flex; align-items: center; gap: .5rem; cursor: pointer; }
+.search-filters .search-check input[type="checkbox"] { width: 1.2rem; height: 1.2rem; min-width: 1.2rem; flex: none; padding: 0; margin: 0; cursor: pointer; }
+.search-filters .search-check-field small { display: block; margin-top: .35rem; font-size: .8rem; line-height: 1.4; color: #526052; }
+.search-page .table-scroll { overflow-x: auto; max-width: 100%; }
+.search-page table { min-width: 750px; }
+.search-page th { min-width: 7rem; white-space: normal; }
+.detail-tree { display: grid; gap: .5rem; overflow-wrap: anywhere; }
+.detail-level { margin: .35rem 0 .35rem .8rem; padding: .45rem; border-left: 2px solid #adc5dd; }
+.detail-level summary { cursor: pointer; }
+@media (max-width: 767px) { .search-page .account-card { min-width: 0; } }
 /* Borrow only: override the filter grid label and full-width input for the checkbox. */
 .borrow-filters .borrow-overdue-filter { display: flex; align-items: center; align-self: end; gap: .5rem; min-height: 2.75rem; white-space: nowrap; cursor: pointer; }
 .borrow-filters .borrow-overdue-filter input[type="checkbox"] { width: 1.2rem; height: 1.2rem; min-width: 1.2rem; flex: none; padding: 0; margin: 0; accent-color: var(--primary); cursor: pointer; }
