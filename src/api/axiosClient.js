@@ -28,7 +28,9 @@ axiosClient.interceptors.request.use((config) => {
 })
 axiosClient.interceptors.response.use((response) => response, (error) => {
   if (error.response?.status === 401 && !['/auth/login', '/auth/google', '/auth/google/reset', '/auth/google/link', '/auth/change-password'].some(path => error.config?.url?.endsWith(path))) unauthorizedHandler()
-  if (error.response?.status === 403 && window.location.pathname !== '/forbidden') window.location.assign('/forbidden')
+  // Read-only search has an inline error/retry state; redirecting loses filters and prevents retry.
+  // Keep the global forbidden route for all other workflows.
+  if (error.response?.status === 403 && !error.config?.url?.startsWith('/search/materials') && window.location.pathname !== '/forbidden') window.location.assign('/forbidden')
   return Promise.reject(error)
 })
 
