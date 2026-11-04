@@ -2,6 +2,7 @@ import api from '../api/axiosClient'
 export const borrowReferences = async () => (await api.get('/borrow/references')).data.data
 export const borrowedAt = async params => (await api.get('/borrow/borrowed-at', { params })).data.data
 export const listBorrow = async params => (await api.get('/borrow', { params })).data.data
+export const dashboardBorrowDebts = async params => (await api.get('/borrow/dashboard-debts', { params })).data.data
 export const getBorrow = async id => (await api.get(`/borrow/${id}`)).data.data
 export const saveBorrow = async (id, body) => (await api[id ? 'patch' : 'post'](id ? `/borrow/${id}` : '/borrow', body)).data.data
 export const borrowAction = async (id, action, body = {}) => (await api.post(`/borrow/${id}/${action}`, body)).data.data

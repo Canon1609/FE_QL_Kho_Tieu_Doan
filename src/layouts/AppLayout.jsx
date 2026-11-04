@@ -4,9 +4,9 @@ import { useAuth } from '../context/useAuth'
 export default function AppLayout() {
   const { user, signOut } = useAuth()
   return <div className="app-shell">
-    <aside className="sidebar"><div className="brand">TĐ5 <span>· QUẢN LÝ KHO</span></div>
+    <aside className="sidebar"><div className="brand"><img src={`${import.meta.env.BASE_URL}Logo_QSQK7.png`} alt="Logo Trường Quân sự Quân khu 7" /><span className="brand-title">Hệ thống Quản lý kho<br />Tiểu đoàn 5</span></div>
       <nav aria-label="Điều hướng chính">
-        <NavLink className="nav-primary" to="/" end>Trang chủ</NavLink>
+        <NavLink className="nav-primary" to="/" end>Tổng quan</NavLink>
         <NavLink className="nav-primary" to="/account/security">Tài khoản cá nhân</NavLink>
         <div className="nav-group" role="group" aria-labelledby="nav-catalog">
           <span className="nav-heading" id="nav-catalog">Quản lý kho · Danh mục</span>

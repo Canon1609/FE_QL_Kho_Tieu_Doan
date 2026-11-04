@@ -18,6 +18,7 @@ import BorrowPage from '../pages/BorrowPage'
 import MaterialSearchPage from '../pages/MaterialSearchPage'
 import MaterialDetailPage from '../pages/MaterialDetailPage'
 import MaterialHistoryPage from '../pages/MaterialHistoryPage'
+import DashboardDebtPage from '../pages/DashboardDebtPage'
 
 export default function AppRoutes() {
   return <BrowserRouter><AuthProvider><Routes>
@@ -25,6 +26,7 @@ export default function AppRoutes() {
     <Route path="/forgot-password" element={<ForgotPasswordPage />} />
     <Route element={<ProtectedRoute />}><Route element={<AppLayout />}>
       <Route path="/" element={<HomePage />} />
+      <Route path="/dashboard/debts/:kind" element={<DashboardDebtPage />} />
       <Route path="/account/security" element={<AccountSecurityPage />} />
       <Route path="/company/assets" element={<CompanyAssetsPage />} />
       <Route path="/stock/borrow" element={<BorrowPage />} />
