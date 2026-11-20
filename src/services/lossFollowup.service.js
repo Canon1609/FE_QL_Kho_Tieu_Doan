@@ -1,0 +1,3 @@
+import api from '../api/axiosClient'
+const request=async p=>{try{const {data}=await p;if(data?.success!==true)throw Error('Phản hồi hệ thống không hợp lệ');return data.data}catch(e){throw Error(e.response?.data?.message||'Không thể thực hiện thao tác. Vui lòng thử lại.',{cause:e})}}
+export const lossFollowupService={get:id=>request(api.get(`/loss-followup/${id}`)),update:(id,data)=>request(api.patch(`/loss-followup/${id}`,data)),propose:(id,itemId,data)=>request(api.post(`/loss-followup/${id}/items/${itemId}/recoveries`,data)),confirm:id=>request(api.post(`/loss-followup/recoveries/${id}/confirm`))}
