@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 export default function AppLayout() {
   const { user, signOut } = useAuth()
@@ -17,6 +18,7 @@ export default function AppLayout() {
           </div>
         </div>
         <NavLink className="nav-primary" to="/stock/search">Tra cứu vật chất</NavLink>
+        <NavLink className="nav-primary" to="/stock/damage-loss">Vật chất hỏng, mất</NavLink>
         {user.role.code === 'BATTALION_ADMIN' && <>
           <div className="nav-group" role="group" aria-labelledby="nav-stock">
             <span className="nav-heading" id="nav-stock">Quản lý kho · Giao dịch</span>
@@ -45,6 +47,6 @@ export default function AppLayout() {
     <div className="shell-main"><header className="shell-header">
       <div><p className="eyebrow">HỆ THỐNG NỘI BỘ</p><h1>Quản lý kho Tiểu đoàn 5</h1></div>
       <div className="account"><span>{user.full_name}<small>{user.role.name} · {user.unit.name}</small></span><button type="button" onClick={signOut}>Đăng xuất</button></div>
-    </header><main className="shell-content"><Outlet /></main></div>
+    </header><main className="shell-content"><ErrorBoundary resetKey={window.location.pathname}><Outlet /></ErrorBoundary></main></div>
   </div>
 }
