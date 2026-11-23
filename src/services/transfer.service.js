@@ -6,4 +6,5 @@ export const saveTransfer = async (id, data) => (await api[id ? 'patch' : 'post'
 export const deleteTransfer = async id => (await api.delete(`/transfers/${id}`)).data.data
 export const postTransfer = async id => (await api.post(`/transfers/${id}/post`, {})).data.data
 export const companyAssets = async (id, params) => (await api.get(`/transfers/company-assets/${id}`, { params })).data.data
+export const companyAssetLocations = async id => (await api.get(`/transfers/company-assets/${id}/locations`)).data.data
 export const companyHistory = async (id, params) => (await api.get(`/transfers/company-assets/${id}/history`, { params })).data.data

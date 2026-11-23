@@ -1,29 +1,31 @@
 import { useCallback, useEffect, useState } from 'react'
 import Alert from '../components/Alert'
 import { useAuth } from '../context/useAuth'
-import { companyUnits, companyAssets, companyHistory } from '../services/transfer.service'
+import { companyUnits, companyAssets, companyAssetLocations, companyHistory } from '../services/transfer.service'
 const msg = err => err.response?.data?.message || 'Không thể kết nối máy chủ. Vui lòng thử lại.'
 export default function CompanyAssetsPage() {
   const { user } = useAuth(), admin = user.role.code === 'BATTALION_ADMIN'
   const [units, setUnits] = useState([]), [unitId, setUnitId] = useState(admin ? '' : user.unit.id)
   const [items, setItems] = useState([]), [history, setHistory] = useState(null), [page, setPage] = useState(1)
-  const [search, setSearch] = useState(''), [loading, setLoading] = useState(false), [error, setError] = useState('')
+  const [search, setSearch] = useState(''), [locationId, setLocationId] = useState(''), [locations, setLocations] = useState([]), [loading, setLoading] = useState(false), [error, setError] = useState('')
   useEffect(() => { if (admin) companyUnits().then(setUnits).catch(e => setError(msg(e))) }, [admin])
+  useEffect(() => { if (unitId) companyAssetLocations(unitId).then(setLocations).catch(e => { setLocations([]); setError(msg(e)) }) }, [unitId])
   const refresh = useCallback(async () => {
     if (!unitId) { setItems([]); return }
     setLoading(true); setError('')
-    try { setItems(await companyAssets(unitId, search ? { search } : {})) } catch (e) { setItems([]); setError(msg(e)) } finally { setLoading(false) }
-  }, [unitId, search])
+    try { setItems(await companyAssets(unitId, { ...(search ? { search } : {}), ...(locationId ? { location_id: locationId } : {}) })) } catch (e) { setItems([]); setError(msg(e)) } finally { setLoading(false) }
+  }, [unitId, search, locationId])
   useEffect(() => { const timer = setTimeout(refresh, 250); return () => clearTimeout(timer) }, [refresh])
   async function view(item, nextPage = 1) {
     setError(''); try { const data = await companyHistory(unitId, { material_id: item.id, page: nextPage }); setHistory({ item, data }); setPage(nextPage) }
     catch (e) { setError(msg(e)) }
   }
-  return <section className="accounts-page stock-page"><h2>Vật chất của Đại đội</h2><p>Tồn vật lý Đại đội đang giữ, bao gồm lượng đang mượn (không phải tồn khả dụng để cấp phát/thu hồi). Xem Mượn / Trả để biết số còn phải trả.</p>
+  return <section className="accounts-page stock-page"><h2>Vật chất theo đơn vị quản lý</h2><p>Tồn vật lý theo đơn vị chịu trách nhiệm (kể cả lượng đang mượn). Địa điểm lưu giữ là nơi cất giữ, không làm thay đổi đơn vị quản lý.</p>
     {error && <Alert action={<button type="button" onClick={refresh}>Tải lại</button>}>{error}</Alert>}
-    {admin && <label>Đại đội <select value={unitId} onChange={e => { setUnitId(e.target.value); setHistory(null) }}><option value="">Chọn Đại đội</option>{units.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}</select></label>}
+    {admin && <label>Đơn vị quản lý <select value={unitId} onChange={e => { setUnitId(e.target.value); setLocationId(''); setHistory(null) }}><option value="">Chọn đơn vị quản lý</option>{units.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}</select></label>}
+    {unitId && <label>Địa điểm lưu giữ <select value={locationId} onChange={e => setLocationId(e.target.value)}><option value="">Tất cả địa điểm</option>{locations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}</select></label>}
     <label>Tìm mã / tên vật chất <input value={search} onChange={e => setSearch(e.target.value)} /></label>
-    {!unitId ? <p>Chọn Đại đội để xem tài sản.</p> : loading ? <p role="status">Đang tải tài sản…</p> : !items.length ? <p>{error ? 'Không tải được tài sản.' : 'Không có vật chất phù hợp.'}</p> : <div className="account-card table-scroll" tabIndex="0" aria-label="Tài sản, cuộn ngang khi cần"><table><thead><tr><th>Mã</th><th>Vật chất</th><th>ĐVT</th><th>Số lượng</th><th>Thao tác</th></tr></thead><tbody>{items.map(item => <tr key={item.id}><td>{item.code}</td><td>{item.name}</td><td>{item.unit?.name}</td><td>{item.quantity}</td><td><button type="button" onClick={() => view(item)}>Chi tiết</button></td></tr>)}</tbody></table></div>}
+    {!unitId ? <p>Chọn đơn vị quản lý để xem vật chất.</p> : loading ? <p role="status">Đang tải tài sản…</p> : !items.length ? <p>{error ? 'Không tải được tài sản.' : locationId ? 'Chưa có vật chất tại địa điểm này.' : 'Không có vật chất phù hợp.'}</p> : <div className="account-card table-scroll" tabIndex="0" aria-label="Tài sản, cuộn ngang khi cần"><table><thead><tr><th>Mã</th><th>Vật chất</th><th>ĐVT</th><th>Số lượng</th><th>Thao tác</th></tr></thead><tbody>{items.map(item => <tr key={item.id}><td>{item.code}</td><td>{item.name}</td><td>{item.unit?.name}</td><td>{item.quantity}</td><td><button type="button" onClick={() => view(item)}>Chi tiết</button></td></tr>)}</tbody></table></div>}
     {history && <section className="account-card"><h3>{history.item.code} · {history.item.name}</h3><p>Tổng hiện giữ: {history.item.quantity} {history.item.unit?.name}</p>
       <h4>Theo nguồn / tình trạng</h4><div className="table-scroll" tabIndex="0"><table><thead><tr><th>Nguồn</th><th>Tình trạng</th><th>Số lượng</th></tr></thead><tbody>{history.item.breakdown.map(b => <tr key={`${b.source_id}:${b.condition_id}`}><td>{b.source}</td><td>{b.condition || 'Không phân loại'}</td><td>{b.quantity}</td></tr>)}</tbody></table></div>
       <h4>Đang ở kho / phòng</h4><div className="table-scroll" tabIndex="0"><table><thead><tr><th>Nơi lưu giữ</th><th>Nguồn</th><th>Tình trạng</th><th>Số lượng</th></tr></thead><tbody>{history.item.locations?.map((b, n) => <tr key={n}><td>{b.location?.name || 'Kho cũ'}</td><td>{b.source}</td><td>{b.condition || 'Không phân loại'}</td><td>{b.quantity}</td></tr>)}</tbody></table></div>
