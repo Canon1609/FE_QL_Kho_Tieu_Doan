@@ -19,11 +19,12 @@
 .account { display: flex; align-items: center; gap: 1rem; text-align: right; overflow-wrap: anywhere; }
 .account small { display: block; color: var(--muted); }
 .shell-content { padding: clamp(1rem,3vw,2.5rem); max-width: 1100px; }
-.shell-content section, .login-panel { background: var(--surface); border: 1px solid var(--border); border-radius: .45rem; padding: clamp(1.25rem,3vw,2rem); box-shadow: 0 4px 16px #1e30200c; }
+.shell-content > .error-boundary-fallback, .shell-content > .health-status { background: var(--surface); }
+.shell-content section:not(.phase11-page):not(.damage-page) { background: var(--surface); border: 1px solid var(--border); border-radius: .45rem; padding: clamp(1.25rem,3vw,2rem); box-shadow: 0 4px 16px #1e30200c; }
 .health-status { display: grid; gap: .5rem; }
 .health-status p { margin: 0; }
 .login-screen { min-height: 100vh; display: grid; place-items: center; padding: 1rem; border-top: 8px solid var(--nav); }
-.login-panel { width: min(100%,420px); }
+.login-panel { background: var(--surface); border: 1px solid var(--border); border-radius: .45rem; padding: clamp(1.25rem,3vw,2rem); box-shadow: 0 4px 16px #1e30200c; width: min(100%,420px); }
 .accounts-page { max-width: 1100px; }
 .accounts-page .account-card { padding: 1.25rem; margin: 1rem 0; box-shadow: none; }
 .accounts-page .account-card h3 { margin-top: 0; }
@@ -44,7 +45,6 @@
 .detail-level { margin: .35rem 0 .35rem .8rem; padding: .45rem; border-left: 2px solid #adc5dd; }
 .detail-level summary { cursor: pointer; }
 @media (max-width: 767px) { .search-page .account-card { min-width: 0; } }
-/* Borrow only: override the filter grid label and full-width input for the checkbox. */
 .borrow-filters .borrow-overdue-filter { display: flex; align-items: center; align-self: end; gap: .5rem; min-height: 2.75rem; white-space: nowrap; cursor: pointer; }
 .borrow-filters .borrow-overdue-filter input[type="checkbox"] { width: 1.2rem; height: 1.2rem; min-width: 1.2rem; flex: none; padding: 0; margin: 0; accent-color: var(--primary); cursor: pointer; }
 .row-actions { display: flex; flex-wrap: wrap; gap: .4rem; }
@@ -179,3 +179,19 @@
 @media (max-width: 400px) { .dashboard-kpis { grid-template-columns: 1fr; } .nav-submenu { grid-template-columns: 1fr; } }
 @media (min-width: 768px) and (max-width: 1023px) { .app-shell { grid-template-columns: 190px minmax(0,1fr); } .shell-header { flex-wrap: wrap; } }
 @media (min-width: 1440px) { .app-shell { grid-template-columns: 260px minmax(0,1fr); } }
+.phase11-page { max-width: 100%; min-width: 0; padding: 1rem; background: #fff; border-radius: 12px; }
+.phase11-page .phase11-filters { display: flex; flex-wrap: wrap; align-items: end; gap: .8rem; margin: 1rem 0; }
+.phase11-page .phase11-filters label { display: grid; gap: .35rem; min-width: 150px; }
+.phase11-page .phase11-filters input, .phase11-page .phase11-filters select { max-width: 100%; min-height: 40px; padding: .45rem; }
+.phase11-page button { min-height: 40px; padding: .5rem .8rem; border: 0; border-radius: 6px; background: #145b85; color: #fff; cursor: pointer; }
+.phase11-page .phase11-table { max-width: 100%; overflow: auto; }
+.phase11-page .phase11-table table { border-collapse: collapse; width: 100%; min-width: 700px; }
+.phase11-page .phase11-table th, .phase11-page .phase11-table td { padding: .55rem; border: 1px solid #ccd3da; text-align: left; white-space: nowrap; }
+.phase11-page .phase11-table th { background: #e8f1f7; position: sticky; top: 0; }
+.phase11-page .phase11-table td input { width: 110px; max-width: 100%; }
+.phase11-page .phase11-table th, .phase11-page .phase11-table td { white-space: normal; overflow-wrap: anywhere; }
+.phase11-page .phase11-table td button { margin: .2rem; }
+.phase11-page [role="status"] { padding: .8rem 1rem; background: #eef6fc; border-left: 4px solid #397da5; }
+@media (max-width: 767px) { .phase11-page .phase11-table table { min-width: 760px; } .phase11-page .phase11-table th, .phase11-page .phase11-table td { padding: .45rem; } .phase11-page .phase11-table td input { width: 100px; } }
+.phase11-page [role="alert"] { color: #a42121; }
+@media (max-width: 767px) { .phase11-page { padding: .7rem; } .phase11-page .phase11-filters { display: grid; grid-template-columns: 1fr; } .phase11-page .phase11-filters label { min-width: 0; } .phase11-page .phase11-table { max-width: calc(100vw - 2rem); } }
