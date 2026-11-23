@@ -100,6 +100,7 @@
 .attention-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; margin-top:1rem; }
 .attention-list > div { display:grid; gap:.4rem; padding:.85rem; border:1px solid var(--border); border-left:4px solid var(--primary); border-radius:.4rem; }
 .attention-list > div:nth-child(2) { border-left-color:#a12622; }
+.attention-list > .attention-needed { border-left-color:#a12622; background:#fff8f7; }
 .month-heading { display:flex; justify-content:space-between; gap:1rem; align-items:end; }
 .month-heading p { color:var(--muted); margin:.3rem 0; }
 .month-heading label { display:grid; gap:.25rem; }
