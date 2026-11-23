@@ -20,6 +20,7 @@ import MaterialDetailPage from '../pages/MaterialDetailPage'
 import MaterialHistoryPage from '../pages/MaterialHistoryPage'
 import DashboardDebtPage from '../pages/DashboardDebtPage'
 import DamageLossPage from '../pages/DamageLossPage'
+import ReportingPage from '../pages/ReportingPage'
 
 export default function AppRoutes() {
   return <BrowserRouter><AuthProvider><Routes>
@@ -32,6 +33,8 @@ export default function AppRoutes() {
       <Route path="/company/assets" element={<CompanyAssetsPage />} />
       <Route path="/stock/borrow" element={<BorrowPage />} />
       <Route path="/stock/damage-loss" element={<DamageLossPage />} />
+      <Route path="/stocktakes" element={<NotFoundPage />} />
+      <Route path="/reports" element={<ReportingPage />} />
       <Route path="/stock/search" element={<MaterialSearchPage />} />
       <Route path="/stock/search/:id" element={<MaterialDetailPage />} />
       <Route path="/stock/search/:id/history" element={<MaterialHistoryPage />} />
